@@ -25,6 +25,7 @@ import alpine.persistence.PaginatedResult;
 import alpine.resources.AlpineRequest;
 import alpine.resources.OrderDirection;
 import alpine.resources.Pagination;
+import org.dependencytrack.event.MetricsUpdateCompletedEvent;
 import org.dependencytrack.event.MetricsUpdateEvent;
 import org.dependencytrack.metrics.Metrics;
 import org.dependencytrack.model.Component;
@@ -76,6 +77,8 @@ public class MetricsUpdateTask implements Subscriber {
                 } else if (MetricsUpdateEvent.Type.VULNERABILITY == event.getType()) {
                     updateVulnerabilitiesMetrics(qm);
                 }
+
+                Event.dispatch(new MetricsUpdateCompletedEvent(event));
             } catch (Exception ex) {
                 LOGGER.error(ex.getMessage());
             }
